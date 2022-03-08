@@ -1,24 +1,36 @@
 import logo from './logo.svg';
 import './App.css';
+import {Film} from "./components/Film.jsx";
+import { useEffect, useState } from 'react';
 
 function App() {
+
+  const [data, setData] = useState([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  const fetchData = async () => {
+    const response = await fetch("https://swapi.dev/api/films");
+    const data = await response.json();
+
+    setData(data.results);
+    setDataLoaded(true);
+
+    console.log(data);
+  }
+
+  useEffect(() => {
+    fetchData();
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    {!dataLoaded ?
+    <p>Loading</p> :
+    data.map((movie, index) => (
+      <Film key={index} movie={movie}/>
+    ))
+    }
+  </>
   );
 }
 
